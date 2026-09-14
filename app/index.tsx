@@ -1,6 +1,16 @@
+import { usePokedexViewModel } from "@/viewmodel/pokedex.viewmodel";
+import { useEffect } from "react";
 import { Text, View, StyleSheet } from "react-native";
 
 export default function Index() {
+  const { HandlePokemon, pokemon } = usePokedexViewModel()
+
+  useEffect(() => {
+    HandlePokemon()
+    console.log(pokemon)  
+
+  }, [])
+
   return (
     <View style={styles.container}>
       <Text>Edit src/app/index.tsx to edit this screen.</Text>
