@@ -4,8 +4,7 @@ import { useState } from "react";
 
 export function usePokedexViewModel() {
     const [pokemon, setPokemon] = useState<Pokemon | null> (null)
-    const [pokeNameOrId, setPokeNameOrId] = useState<string | number>("")
-    const [pokeId, setPokeId] = useState(0)
+    const [pokeNameOrId, setPokeNameOrId] = useState<string | "">("")
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
 
@@ -26,13 +25,30 @@ export function usePokedexViewModel() {
             setLoading(false)
         }
     }
+
+    function HandleChange(query: string) {
+        setPokeNameOrId(query);
+
+        if (query.trim() === "") {
+            setPokemon(null);
+            return;
+        }
+
+        const isNumber = /^\d+$/.test(query);
+
+        if (isNumber) {
+            HandlePokemon(Number(query), null); 
+        } else {
+            HandlePokemon(null, query);         
+        }
+    }
     
 
     return {
         HandlePokemon,
+        HandleChange,
         pokemon,
         loading,
-        pokeId,
         pokeNameOrId,
         error,
     }
