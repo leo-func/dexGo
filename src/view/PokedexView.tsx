@@ -1,15 +1,17 @@
+import { Colors } from "@/constants/Colors";
 import { Capitalize } from "@/utils/Capitalize";
 import { usePokedexViewModel } from "@/viewmodel/pokedex.viewmodel";
 import { ChevronLeft, ChevronRight } from "lucide-react-native";
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from "react-native-responsive-screen";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export function PokedexView({
-    HandlePokemon,
     pokeNameOrId,
     HandleChange,
-    pokemon
+    pokemon,
+    HandleIcrement,
+    HandleDecrement
 }: ReturnType<typeof usePokedexViewModel>) {
     return (
         <SafeAreaView edges={['top']} style={styles.container}>
@@ -29,16 +31,23 @@ export function PokedexView({
 
                 <View style={styles.pokemonHero}>
                     <View style={styles.buttonLeft}>
-                        <TouchableOpacity>
-                            <ChevronLeft></ChevronLeft>
+                        <TouchableOpacity onPress={HandleDecrement}>
+                            <ChevronLeft color={Colors.white}></ChevronLeft>
                         </TouchableOpacity>
                     </View>
-
-                    <Text> imagem </Text>
+                    {pokemon?.sprites?.other?.showdown?.front_default && (
+                        <Image
+                            style={{ width: wp("40%"), height: hp("40%") }}
+                            source={{
+                                uri: pokemon.sprites.other.showdown.front_default
+                            }}
+                            resizeMode="contain"
+                        />
+                    )}
                     
                     <View style={styles.buttonRight}>
-                        <TouchableOpacity>
-                            <ChevronRight></ChevronRight>
+                        <TouchableOpacity onPress={HandleIcrement}>
+                            <ChevronRight color={Colors.white}></ChevronRight>
                         </TouchableOpacity>
                     </View>
 
@@ -49,15 +58,17 @@ export function PokedexView({
                     <Text>{Capitalize(pokemon?.name)} </Text>
 
                     <View style={styles.typeContainer}>
-                        <Text>Tipo</Text>
+                        {pokemon?.types.map(item => (
+                            <Text key={item.slot}>{Capitalize(item.type.name)}</Text>
+                        ))}
                     </View>
 
                     <View style={styles.pokemonMetrics}>
-                        <Text>Altura {pokemon?.height}</Text>
+                        <Text>Altura {(pokemon?.height ?? 0) / 10}m</Text>
                         
                         <View style={{backgroundColor: "purple", width: wp("0.5%"), alignSelf: "center", height: hp("4%")}}></View>
                         
-                        <Text>Peso</Text>
+                        <Text>Peso {(pokemon?.weight ?? 0) / 10}kg</Text>
                     </View>
                     
                 </View>
@@ -71,12 +82,12 @@ export function PokedexView({
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#001eff",
+        backgroundColor: Colors.background,
     },
 
     content: {
         alignSelf: "center",
-        gap: hp("20%"),
+        gap: hp("5%"),
         width: wp("90%"),
     },
 
@@ -89,27 +100,34 @@ const styles = StyleSheet.create({
     pokemonHero: {
         flexDirection: "row",
         alignSelf: "center",
-        gap: wp("30%")
+        alignItems: "center",
+        gap: wp("15%")
     },
 
     searchInput:  {
     },
 
     buttonRight: {
-        backgroundColor: "red"
+        backgroundColor: Colors.surface,
+        borderRadius: hp("2%"),
+        padding: wp("2%")
     },
 
     buttonLeft: {
-        backgroundColor: "red"
+        backgroundColor: Colors.surface,
+        borderRadius: hp("2%"),
+        padding: wp("2%")
     },
 
     infoContainer: {
         alignItems: "center",
+        backgroundColor: Colors.surface,
         gap: hp("1%"),
     },
 
     typeContainer: {
-        backgroundColor: "purple"
+        backgroundColor: "purple",
+        alignItems: "center"
     },
 
     pokemonMetrics: {
