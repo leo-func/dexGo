@@ -1,7 +1,8 @@
 import { Colors } from "@/constants/Colors";
+import { PokemonTypeColors } from "@/constants/PokemonTypeColors";
 import { Capitalize } from "@/utils/Capitalize";
 import { usePokedexViewModel } from "@/viewmodel/pokedex.viewmodel";
-import { ChevronLeft, ChevronRight } from "lucide-react-native";
+import { ChevronLeft, ChevronRight, Ruler, Weight } from "lucide-react-native";
 import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from "react-native-responsive-screen";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -54,21 +55,52 @@ export function PokedexView({
                 </View>
 
                 <View style={styles.infoContainer}>
-                    <Text>Nº {pokemon?.id}</Text>
-                    <Text>{Capitalize(pokemon?.name)} </Text>
-
+                    <Text style={{color: Colors.textSecondary, fontSize: 12, fontWeight: 600}}>Nº {pokemon?.id}</Text>
+                    <Text style={{color: Colors.text, fontSize: 20, fontWeight: 600}}>{Capitalize(pokemon?.name)} </Text>
                     <View style={styles.typeContainer}>
                         {pokemon?.types.map(item => (
-                            <Text key={item.slot}>{Capitalize(item.type.name)}</Text>
+                            <View key={item.slot} style={
+                                    {
+                                        flexDirection: "row",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        backgroundColor: PokemonTypeColors[item.type.name as keyof typeof PokemonTypeColors],
+                                        padding: wp("0.5%"),
+                                        borderRadius: hp("1%"),
+                                        width: wp("30%"),
+                                        gap: wp("2%"),
+                                        marginTop: hp("1%")
+                                    }
+                                }>
+                            
+
+                                <Text style={{color: Colors.background, fontWeight: 600}} key={item.slot}>{Capitalize(item.type.name)}</Text>
+                            </View>
+                            
                         ))}
                     </View>
 
                     <View style={styles.pokemonMetrics}>
-                        <Text>Altura {(pokemon?.height ?? 0) / 10}m</Text>
+                        <View style={{width: wp("12%"), gap: hp("0.5%"), alignItems: "center"}}>
+                            <Ruler size={28} color={Colors.textSecondary}></Ruler>
+                            <Text style={{textAlign: "center", color: Colors.textSecondary, fontSize: 12, fontWeight: 600}}>Altura</Text>
+                            <Text style={{textAlign: "center", color: Colors.text, fontWeight: 600}}>{(pokemon?.height ?? 0) / 10}m</Text> 
+                        </View>
+                    
                         
-                        <View style={{backgroundColor: "purple", width: wp("0.5%"), alignSelf: "center", height: hp("4%")}}></View>
+                        <View style={
+                                {
+                                    backgroundColor: Colors.textSecondary, width: wp("0.2%"), alignSelf: "center", height: hp("7%")
+                                }
+                            }
+                        ></View>
+
+                        <View style={{width: wp("12%"), gap: hp("0.5%"), alignItems: "center"}}>
+                            <Weight size={28} color={Colors.textSecondary}></Weight>
+                            <Text style={{textAlign: "center", color: Colors.textSecondary, fontSize: 12, fontWeight: 600}}>Peso</Text>
+                            <Text style={{textAlign: "center", color: Colors.text, fontWeight: 600}}>{(pokemon?.weight ?? 0) / 10}kg</Text> 
+                        </View>
                         
-                        <Text>Peso {(pokemon?.weight ?? 0) / 10}kg</Text>
                     </View>
                     
                 </View>
@@ -121,19 +153,26 @@ const styles = StyleSheet.create({
 
     infoContainer: {
         alignItems: "center",
-        backgroundColor: Colors.surface,
-        gap: hp("1%"),
+        justifyContent: "center",
+        backgroundColor: Colors.container,
+        padding: wp("5%"),
+        borderRadius: hp("1%")
     },
 
     typeContainer: {
-        backgroundColor: "purple",
-        alignItems: "center"
+        alignItems: "center",
     },
 
     pokemonMetrics: {
         flexDirection: "row",
+        backgroundColor: Colors.surface,
         alignItems: "center",
-        gap: wp("5%")
+        justifyContent: "center",
+        marginTop: hp("1.5%"),
+        width: wp("80%"),
+        padding: wp("5%"),        
+        gap: wp("15%"),
+        borderRadius: hp("1%")
     }
 
 

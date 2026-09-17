@@ -1,9 +1,10 @@
 export const Colors = {
-    background: "#172554",
-    surface: "#1E3A8A",
+    background: "#001a41",
+    surface: "#1b2b61",
+    container: "#001433",
     primary: "#3B82F6",
     text: "#F8FAFC",
-    textSecondary: "#CBD5E1",
+    textSecondary: "#ffffff77",
     border: "#334155",
     white: "#FFFFFF",
 }
