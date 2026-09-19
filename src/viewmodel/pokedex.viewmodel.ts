@@ -6,7 +6,7 @@ export function usePokedexViewModel() {
     const [pokemon, setPokemon] = useState<Pokemon | null> (null)
     const [pokeNameOrId, setPokeNameOrId] = useState<string | "">("")
     const [pokeId, setPokeId] = useState(1)
-    const [isRandomize, setIsRandomize] = useState(false)
+    const [isRandom, setIsRandom] = useState(false)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<Error | null>()
     const [direction, setDirection] = useState<"left" | "right">("right");
@@ -15,17 +15,17 @@ export function usePokedexViewModel() {
 
     useEffect(() => {
         const interval = setInterval(() => {
-            if (isRandomize) {
+            if (isRandom) {
                 const randNumber = Math.floor(Math.random() * 1026)
-                HandlePokemon(randNumber, null, isRandomize)
+                HandlePokemon(randNumber, null, isRandom)
             }
         }, 1000);
 
         return () => clearInterval(interval)
-    }, [isRandomize])
+    }, [isRandom])
 
     useEffect(() => {
-        HandlePokemon(pokeId, null, isRandomize)
+        HandlePokemon(pokeId, null, isRandom)
     }, [pokeId])
 
 
@@ -39,7 +39,7 @@ export function usePokedexViewModel() {
             if (!data) return
 
             if (!random) {
-                setIsRandomize(false)
+                setIsRandom(false)
             }
 
             pokeIdRef.current = data?.id
@@ -56,7 +56,7 @@ export function usePokedexViewModel() {
 
     function HandleIcrement() {
         setDirection("right") 
-        setIsRandomize(false)
+        setIsRandom(false)
         setPokeId(prev => prev + 1)
     }
 
@@ -64,7 +64,7 @@ export function usePokedexViewModel() {
         if (pokeId <= 1) return
 
         setDirection("left")
-        setIsRandomize(false)
+        setIsRandom(false)
         setPokeId(prev => prev - 1)
     }
 
@@ -72,7 +72,7 @@ export function usePokedexViewModel() {
         setPokeNameOrId(query)
 
         if (query.trim() === "") {
-            setIsRandomize(true)
+            setIsRandom(true)
             setPokemon(null);
             return;
         }
@@ -93,7 +93,7 @@ export function usePokedexViewModel() {
         HandleDecrement,
         HandleChange,
         pokemon,
-        isRandomize,
+        isRandom,
         loading,
         pokeNameOrId,
         error,
