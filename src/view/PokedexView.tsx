@@ -1,33 +1,67 @@
+import BallIcon from "@/components/BallIcon";
+import CustomInput from "@/components/CustomInput";
 import { Colors } from "@/constants/Colors";
 import { PokemonTypeColors } from "@/constants/PokemonTypeColors";
 import { Capitalize } from "@/utils/Capitalize";
+import { UpperCase } from "@/utils/UpperCase";
 import { usePokedexViewModel } from "@/viewmodel/pokedex.viewmodel";
-import { ChevronLeft, ChevronRight, Ruler, Weight } from "lucide-react-native";
-import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { ChevronLeft, ChevronRight, Ruler, Search, Weight } from "lucide-react-native";
+import { useEffect, useRef } from "react";
+import { Animated, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from "react-native-responsive-screen";
 import { SafeAreaView } from "react-native-safe-area-context";
+
 
 export function PokedexView({
     pokeNameOrId,
     HandleChange,
     pokemon,
+    isRandom,
     HandleIcrement,
-    HandleDecrement
+    HandleDecrement,
+    direction
 }: ReturnType<typeof usePokedexViewModel>) {
+    const opacity = useRef(new Animated.Value(0)).current
+    const transformX = useRef(new Animated.Value(100)).current
+
+    useEffect(() => {
+        opacity.setValue(0)
+        if (direction === "left") {
+            transformX.setValue(-100)
+            console.log(transformX)
+        } else {
+            transformX.setValue(100)
+        }
+
+        Animated.parallel([
+            Animated.timing(opacity, {
+                toValue: 1,
+                duration: 500,
+                useNativeDriver: false
+            }),
+            Animated.timing(transformX, {
+                toValue: 0,
+                duration: 500,
+                useNativeDriver: false
+            }),
+        ]).start()
+
+    }, [pokemon, direction])
+
     return (
-        <SafeAreaView edges={['top']} style={styles.container}>
+        <SafeAreaView edges={['top', 'bottom']} style={styles.container}>
             <View style={styles.content}>
 
                 <View style={styles.header}>
-                    <Text>Pokedex</Text>
-
-                    <TextInput 
+                    <CustomInput 
+                    containerStyle={{borderRadius: hp("5%"), backgroundColor: Colors.surface}} 
+                    placeholder="Buscar por nome ou número..."
+                    placeholderTextColor={Colors.textSecondary}
                     value={pokeNameOrId}
                     onChangeText={HandleChange}
-                    style={styles.searchInput} 
-                    placeholder="Buscar por nome ou id">
-                        
-                    </TextInput>
+                    icon={<Search color={Colors.textSecondary}/>}
+                    ></CustomInput>
+                    
                 </View>
 
                 <View style={styles.pokemonHero}>
@@ -36,15 +70,25 @@ export function PokedexView({
                             <ChevronLeft color={Colors.white}></ChevronLeft>
                         </TouchableOpacity>
                     </View>
-                    {pokemon?.sprites?.other?.showdown?.front_default && (
-                        <Image
-                            style={{ width: wp("40%"), height: hp("40%") }}
+
+                    {pokemon?.sprites?.other?.showdown?.front_default && !isRandom ? (
+                        <Animated.Image
+                            style={{ width: wp("40%"), height: hp("40%"), opacity, transform: [{translateX: transformX}]}}
                             source={{
                                 uri: pokemon.sprites.other.showdown.front_default
                             }}
                             resizeMode="contain"
                         />
-                    )}
+                        ) : (
+                        <Animated.Image
+                            style={{ width: wp("40%"), height: hp("40%"), tintColor: "#000", opacity, transform: [{translateX: transformX}]}}
+                            source={{
+                            uri: pokemon?.sprites.other.showdown.front_default
+                            }}
+                            resizeMode="contain"
+                        />
+                        )
+                    }
                     
                     <View style={styles.buttonRight}>
                         <TouchableOpacity onPress={HandleIcrement}>
@@ -74,7 +118,7 @@ export function PokedexView({
                                 }>
                             
 
-                                <Text style={{color: Colors.background, fontWeight: 600}} key={item.slot}>{Capitalize(item.type.name)}</Text>
+                                <Text style={{color: Colors.background, fontWeight: 600}} key={item.slot}>{UpperCase(item.type.name)}</Text>
                             </View>
                             
                         ))}
@@ -104,6 +148,19 @@ export function PokedexView({
                     </View>
                     
                 </View>
+                
+            </View>
+
+            <View style={{ flex: 1, alignItems: 'center', position: 'relative' }}>
+
+            <BallIcon 
+                width={52} 
+                height={52} 
+                style={{
+                position: "absolute", 
+                bottom: hp("5")
+                }}
+            />
 
             </View>
         </SafeAreaView>
@@ -119,14 +176,19 @@ const styles = StyleSheet.create({
 
     content: {
         alignSelf: "center",
-        gap: hp("5%"),
+        gap: hp("3%"),
         width: wp("90%"),
     },
 
     header: {
         marginTop: hp("5%"),
-        gap: hp("1%"),
-        backgroundColor: "purple"
+        gap: hp("1.5%"),
+    },
+
+    tittle: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: wp("3%")
     },
 
     pokemonHero: {
@@ -135,6 +197,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         gap: wp("15%")
     },
+    
 
     searchInput:  {
     },
@@ -142,7 +205,7 @@ const styles = StyleSheet.create({
     buttonRight: {
         backgroundColor: Colors.surface,
         borderRadius: hp("2%"),
-        padding: wp("2%")
+        padding: wp("2%"),
     },
 
     buttonLeft: {
@@ -174,6 +237,4 @@ const styles = StyleSheet.create({
         gap: wp("15%"),
         borderRadius: hp("1%")
     }
-
-
 })
