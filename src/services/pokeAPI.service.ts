@@ -4,7 +4,7 @@ export async function GetPokemon(id: number | null, name: string | null) : Promi
     const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id ?? name}/`)
 
     if (!response.ok) {
-        return null
+        throw new Error("Erro ao buscar")
     }
 
     const data = await response.json()
