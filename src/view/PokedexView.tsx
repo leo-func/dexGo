@@ -71,23 +71,41 @@ export function PokedexView({
                         </TouchableOpacity>
                     </View>
 
-                    {pokemon?.sprites?.other?.showdown?.front_default && !isRandom ? (
+                    {pokemon?.sprites?.versions["generation-v"]["black-white"]?.animated.front_default && !isRandom ? (
                         <Animated.Image
                             style={{ width: wp("40%"), height: hp("40%"), opacity, transform: [{translateX: transformX}]}}
                             source={{
-                                uri: pokemon.sprites.other.showdown.front_default
+                                uri: pokemon.sprites.versions["generation-v"]["black-white"].animated.front_default
                             }}
                             resizeMode="contain"
                         />
+
+                        ) : pokemon?.sprites.versions["generation-v"]["black-white"].front_default && !isRandom ? (
+                            <Animated.Image
+                                style={{ width: wp("40%"), height: hp("40%"), opacity, transform: [{translateX: transformX}]}}
+                                source={{
+                                    uri: pokemon.sprites.versions["generation-v"]["black-white"].front_default
+                                }}
+                                resizeMode="contain"
+                            />   
+                        ) : pokemon?.sprites.versions["generation-v"]["black-white"].animated.front_default && isRandom ? (
+                            <Animated.Image
+                                style={{ width: wp("40%"), height: hp("40%"), tintColor: "#000", opacity, transform: [{translateX: transformX}]}}
+                                source={{
+                                    uri: pokemon?.sprites.versions["generation-v"]["black-white"].animated.front_default
+                                }}
+                                resizeMode="contain"
+                        />  
                         ) : (
-                        <Animated.Image
-                            style={{ width: wp("40%"), height: hp("40%"), tintColor: "#000", opacity, transform: [{translateX: transformX}]}}
-                            source={{
-                            uri: pokemon?.sprites.other.showdown.front_default
-                            }}
-                            resizeMode="contain"
-                        />
+                            <Animated.Image
+                                style={{ width: wp("40%"), height: hp("40%"), tintColor: "#000", opacity, transform: [{translateX: transformX}]}}
+                                source={{
+                                uri: pokemon?.sprites.versions["generation-v"]["black-white"].front_default
+                                }}
+                                resizeMode="contain"
+                            />  
                         )
+
                     }
                     
                     <View style={styles.buttonRight}>
