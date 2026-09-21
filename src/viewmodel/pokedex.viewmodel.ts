@@ -19,7 +19,7 @@ export function usePokedexViewModel() {
                 const randNumber = Math.floor(Math.random() * 1026)
                 HandlePokemon(randNumber, null, isRandom)
             }
-        }, 1000);
+        }, 2000);
 
         return () => clearInterval(interval)
     }, [isRandom])
