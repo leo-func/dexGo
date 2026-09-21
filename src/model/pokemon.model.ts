@@ -9,7 +9,18 @@ export interface Pokemon {
                 front_default: string
             }
         }
-    },
+        versions: {
+                "generation-v": {
+                    "black-white": {
+                        "animated": {
+                            front_default: string
+                        }
+                        front_default: string
+                    } 
+                }
+            }
+
+        },
     types: {
         slot: number,
         type: {
