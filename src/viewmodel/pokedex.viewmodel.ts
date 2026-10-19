@@ -2,6 +2,7 @@ import { EvolutionChain } from "@/model/evolutionChain.model";
 import { Pokemon } from "@/model/pokemon.model";
 import { GetEvolutionChain, GetPokemon } from "@/services/pokeAPI.service";
 import { getFavorites, saveFavorites } from "@/services/storage.service";
+import { isNumber } from "@/utils/IsNumber";
 import { useEffect, useRef, useState } from "react";
 
 export function usePokedexViewModel(favoritePokemonId: number = 0) {
@@ -112,9 +113,7 @@ export function usePokedexViewModel(favoritePokemonId: number = 0) {
             return;
         }
 
-        const isNumber = /^\d+$/.test(query);
-
-        if (isNumber) {
+        if (isNumber(query)) {
             HandlePokemon(Number(query), null); 
             setPokeId(Number(query))
         } else {
