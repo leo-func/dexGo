@@ -1,17 +1,19 @@
 import { EvolutionChain } from "@/model/evolutionChain.model";
 import { Pokemon } from "@/model/pokemon.model";
 import { GetEvolutionChain, GetPokemon } from "@/services/pokeAPI.service";
+import { getFavorites, saveFavorites } from "@/services/storage.service";
 import { useEffect, useRef, useState } from "react";
 
-export function usePokedexViewModel() {
+export function usePokedexViewModel(favoritePokemonId: number = 0) {
     const [pokemon, setPokemon] = useState<Pokemon | null> (null)
     const [pokeNameOrId, setPokeNameOrId] = useState<string | "">("")
-    const [pokeId, setPokeId] = useState(1)
+    const [pokeId, setPokeId] = useState(favoritePokemonId > 0 ? favoritePokemonId : 1)
     const [isRandom, setIsRandom] = useState(false)
+    const [isFavorite, setIsFavorite] = useState(false)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<Error | null>()
     const [direction, setDirection] = useState<"left" | "right">("right");
-    const [evols, setEvols] = useState<EvolutionChain | null>(null)
+    const [evols, setEvols] = useState<EvolutionChain | null>(null) 
 
     const pokeIdRef = useRef(1)
 
@@ -49,6 +51,8 @@ export function usePokedexViewModel() {
 
             setPokeId(pokeIdRef.current)
             setPokemon(data)
+
+            await checkFavorite(data.id)
             
         } catch (exception) {
             setError(exception as Error)
@@ -68,6 +72,28 @@ export function usePokedexViewModel() {
         } finally {
 
         }
+    }
+
+    async function checkFavorite(pokemonId: number) {
+        const favorites = await getFavorites()
+
+        if (favorites?.includes(pokemonId.toString())) {
+            setIsFavorite(true)
+            return
+        }
+
+        setIsFavorite(false)
+    }
+
+    async function HandleFavorite(pokemonId: number | undefined) {
+        await saveFavorites(pokemonId)
+
+        if(!pokemonId) {
+            return
+        }
+
+        checkFavorite(pokemonId)
+        console.log(await getFavorites())
     }
 
     function HandleIcrement() {
@@ -108,6 +134,7 @@ export function usePokedexViewModel() {
         HandleIcrement,
         HandleDecrement,
         HandleChange,
+        HandleFavorite,
         HandlePokemon,
         pokemon,
         evols,
@@ -116,5 +143,6 @@ export function usePokedexViewModel() {
         pokeNameOrId,
         error,
         direction,
+        isFavorite,
     }
 }
