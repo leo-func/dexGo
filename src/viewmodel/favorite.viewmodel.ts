@@ -1,11 +1,20 @@
 import { Pokemon } from "@/model/pokemon.model";
 import { GetPokemon } from "@/services/pokeAPI.service";
 import { getFavorites } from "@/services/storage.service";
+import { isNumber } from "@/utils/IsNumber";
 import { useEffect, useState } from "react";
 
 export function useFavoriteViewmodel(){
     const [pokemons, setPokemons] = useState<Pokemon[]>([])
+    const [search, setSearch] = useState<String>("")
     const [isLoading, setIsLoading] = useState(false)
+    const filteredPokemons = pokemons.filter(pokemon => {
+        return !isNumber(search.toLowerCase()) ?  
+            pokemon.name.toLowerCase().includes(search.toLowerCase() || "") :  
+            String(pokemon.id).includes(search.toLowerCase())
+    }
+        
+    )
 
     useEffect(() => {
         HandlePokemons()
@@ -38,5 +47,7 @@ export function useFavoriteViewmodel(){
     return {
         pokemons,
         isLoading,
+        setSearch,
+        filteredPokemons
     }
 }

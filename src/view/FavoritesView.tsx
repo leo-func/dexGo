@@ -12,7 +12,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 export function FavoriteView({
     pokemons,
     isLoading,
-    onPokedex
+    onPokedex,
+    setSearch,
+    filteredPokemons
 }: ReturnType<typeof useFavoriteViewmodel> & {
     onPokedex: (pokemonId: number) => void
 }) {
@@ -26,6 +28,7 @@ export function FavoriteView({
                     <CustomInput 
                     containerStyle={{borderRadius: hp("5%"), borderWidth: 2, borderColor: Colors.border,backgroundColor: Colors.surface}} 
                     placeholder="Buscar por nome ou número..."
+                    onChangeText={setSearch}
                     placeholderTextColor={Colors.textSecondary}
                     icon={<Search color={Colors.textSecondary}/>}
                     ></CustomInput>
@@ -41,7 +44,7 @@ export function FavoriteView({
                         style={{maxHeight: hp("70%")}}
                         contentContainerStyle={styles.listContent}
                         numColumns={4}
-                        data={pokemons}
+                        data={filteredPokemons}
                         renderItem={({ item }) => (
                             <TouchableOpacity
                                 onPress={() => onPokedex(item.id)}
