@@ -77,24 +77,16 @@ export function usePokedexViewModel(favoritePokemonId: number = 0) {
 
     async function checkFavorite(pokemonId: number) {
         const favorites = await getFavorites()
+        const ids: number[] = favorites ? JSON.parse(favorites) : []
 
-        if (favorites?.includes(pokemonId.toString())) {
-            setIsFavorite(true)
-            return
-        }
-
-        setIsFavorite(false)
+        setIsFavorite(ids.includes(pokemonId))
     }
 
     async function HandleFavorite(pokemonId: number | undefined) {
+        if(!pokemonId) return
+        
         await saveFavorites(pokemonId)
-
-        if(!pokemonId) {
-            return
-        }
-
         checkFavorite(pokemonId)
-        console.log(await getFavorites())
     }
 
     function HandleIcrement() {
