@@ -1,5 +1,6 @@
+import { EvolutionChain } from "@/model/evolutionChain.model";
 import { Pokemon } from "@/model/pokemon.model";
-import { GetPokemon } from "@/services/pokeAPI.service";
+import { GetEvolutionChain, GetPokemon } from "@/services/pokeAPI.service";
 import { useEffect, useRef, useState } from "react";
 
 export function usePokedexViewModel() {
@@ -10,6 +11,7 @@ export function usePokedexViewModel() {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<Error | null>()
     const [direction, setDirection] = useState<"left" | "right">("right");
+    const [evols, setEvols] = useState<EvolutionChain | null>(null)
 
     const pokeIdRef = useRef(1)
 
@@ -26,6 +28,7 @@ export function usePokedexViewModel() {
 
     useEffect(() => {
         HandlePokemon(pokeId, null, isRandom)
+        loadEvolChain(pokeId)
     }, [pokeId])
 
 
@@ -51,6 +54,19 @@ export function usePokedexViewModel() {
             setError(exception as Error)
         } finally {
             setLoading(false)
+        }
+    }
+
+    async function loadEvolChain(pokemonId: number) {
+        try {
+            setEvols(null)
+            const evols = await GetEvolutionChain(pokemonId)
+
+            setEvols(evols)
+        } catch (exception) {
+            console.log("Erro ao buscar: ", exception)
+        } finally {
+
         }
     }
 
@@ -92,7 +108,9 @@ export function usePokedexViewModel() {
         HandleIcrement,
         HandleDecrement,
         HandleChange,
+        HandlePokemon,
         pokemon,
+        evols,
         isRandom,
         loading,
         pokeNameOrId,
