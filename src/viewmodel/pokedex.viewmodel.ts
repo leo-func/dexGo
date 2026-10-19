@@ -14,6 +14,7 @@ export function usePokedexViewModel(favoritePokemonId: number = 0) {
     const [error, setError] = useState<Error | null>()
     const [direction, setDirection] = useState<"left" | "right">("right");
     const [evols, setEvols] = useState<EvolutionChain | null>(null) 
+    const [page, setPage] = useState(0)
 
     const pokeIdRef = useRef(1)
 
@@ -144,5 +145,7 @@ export function usePokedexViewModel(favoritePokemonId: number = 0) {
         error,
         direction,
         isFavorite,
+        page,
+        setPage
     }
 }
