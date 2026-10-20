@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 
 export function useFavoriteViewmodel(){
     const [pokemons, setPokemons] = useState<Pokemon[]>([])
-    const [search, setSearch] = useState<String>("")
+    const [search, setSearch] = useState<string>("")
     const [isLoading, setIsLoading] = useState(false)
     const filteredPokemons = pokemons.filter(pokemon => {
         return !isNumber(search.toLowerCase()) ?  
