@@ -30,9 +30,19 @@ export function PokedexView({
     const opacity = useRef(new Animated.Value(0)).current
     const transformX = useRef(new Animated.Value(100)).current
     const pageX = useRef(new Animated.Value(0)).current
+    const hasEvolsRef = useRef(false)
+
+    useEffect(() => {
+        hasEvolsRef.current = !!evols
+    }, [evols])
+
+    useEffect(() => {
+        if (!evols) setPage(0)
+    }, [evols])
+
     const panResponder = useRef(
         PanResponder.create({
-            onMoveShouldSetPanResponder: (_, g) => Math.abs(g.dx) > 10,
+            onMoveShouldSetPanResponder: (_, g) => hasEvolsRef.current && Math.abs(g.dx) > 10,
             
             onPanResponderMove: (_, g) => {
                 pageX.setValue(g.dx)
@@ -137,7 +147,7 @@ export function PokedexView({
                         />
                     )}
 
-                    {page === 1 && (
+                    {page === 1 && evols && (
                         <>
                         <Text style={{color: Colors.white, fontWeight: 600, fontSize: wp("5%")}}>EVOLUTIONS</Text>
                         
@@ -154,7 +164,7 @@ export function PokedexView({
 
                     <View style={styles.dots}>
                         <View style={[styles.dot, page === 0 && { backgroundColor: "#ffc732" }]} />
-                        <View style={[styles.dot, page === 1 && { backgroundColor: "#ffc732" }]} />
+                        <View style={[evols && styles.dot, page === 1 && { backgroundColor: "#ffc732" }]} />
                     </View>
                 </View>
 
